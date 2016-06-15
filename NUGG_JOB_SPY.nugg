@@ -1,0 +1,1680 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nugget name="JOB_SPY">
+ <MSAG ARBGB="ZJOB" MASTERLANG="F" RESPUSER="DELAWARE" STEXT="Job - Classe de message">
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="001" TEXT="Le Job &amp; &amp; n&apos;est pas éligible pour le traitement."/>
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="002" TEXT="Veuillez saisir un Temps de décalage"/>
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="003" TEXT="Le Job &amp; &amp; ne s&apos;est pas terminé correctement."/>
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="004" TEXT="Job &amp; &amp; surveillé."/>
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="005" TEXT="Le Job &amp; s&apos;est terminé correctement."/>
+  <t100 SPRSL="F" ARBGB="ZJOB" MSGNR="006" TEXT="Surveillance du Job &amp; &amp; fini (temps dépassé / traitement terminé)"/>
+  <t100t SPRSL="F" ARBGB="ZJOB" STEXT="Job - Classe de message"/>
+ </MSAG>
+ <PROG NAME="ZTEC_JOB_LAUNCHER" VARCL="X" SUBC="1" APPL="*" RSTAT="K" RMAND="400" RLOAD="F" FIXPT="X" UCCHECK="X">
+  <textPool>
+   <language SPRAS="F">
+    <textElement ID="I" KEY="001" ENTRY="Seconde" LENGTH="7 "/>
+    <textElement ID="I" KEY="002" ENTRY="Minute" LENGTH="6 "/>
+    <textElement ID="I" KEY="003" ENTRY="Heure" LENGTH="5 "/>
+    <textElement ID="I" KEY="004" ENTRY="Infini" LENGTH="6 "/>
+    <textElement ID="I" KEY="TB1" ENTRY="Sélection job à surveiller" LENGTH="26 "/>
+    <textElement ID="I" KEY="TB2" ENTRY="Sélection programme à lancer" LENGTH="35 "/>
+    <textElement ID="I" KEY="TB3" ENTRY="Paramètres d&apos;exécution" LENGTH="22 "/>
+    <textElement ID="R" ENTRY="Lanceur / Surveillance de Job" LENGTH="29 "/>
+    <textElement ID="S" KEY="P_DECAL" ENTRY="        Décaler l&apos;exécution" LENGTH="27 "/>
+    <textElement ID="S" KEY="P_DHOU" ENTRY="        Heure" LENGTH="13 "/>
+    <textElement ID="S" KEY="P_DMIN" ENTRY="        Minute" LENGTH="14 "/>
+    <textElement ID="S" KEY="P_DSEC" ENTRY="        Seconde" LENGTH="15 "/>
+    <textElement ID="S" KEY="P_DTIME" ENTRY="        Temps de décalage" LENGTH="25 "/>
+    <textElement ID="S" KEY="P_JCOUNT" ENTRY="D       ." LENGTH="17 "/>
+    <textElement ID="S" KEY="P_JOB" ENTRY="D       ." LENGTH="18 "/>
+    <textElement ID="S" KEY="P_LHOU" ENTRY="        Heure" LENGTH="13 "/>
+    <textElement ID="S" KEY="P_LINF" ENTRY="        Infini" LENGTH="14 "/>
+    <textElement ID="S" KEY="P_LMIN" ENTRY="        Minute" LENGTH="14 "/>
+    <textElement ID="S" KEY="P_LSEC" ENTRY="        Seconde" LENGTH="15 "/>
+    <textElement ID="S" KEY="P_LTIME" ENTRY="        Temps limite" LENGTH="20 "/>
+    <textElement ID="S" KEY="P_REPID" ENTRY="        Programme" LENGTH="20 "/>
+    <textElement ID="S" KEY="P_SPY" ENTRY="        Surveillance uniquement" LENGTH="31 "/>
+    <textElement ID="S" KEY="P_USER" ENTRY="        Utilisateur de lancement" LENGTH="32 "/>
+    <textElement ID="S" KEY="P_VARI" ENTRY="D       ." LENGTH="16 "/>
+    <textElement ID="S" KEY="P_WHOU" ENTRY="        Heure" LENGTH="13 "/>
+    <textElement ID="S" KEY="P_WMIN" ENTRY="        Minute" LENGTH="14 "/>
+    <textElement ID="S" KEY="P_WSEC" ENTRY="        Seconde" LENGTH="15 "/>
+    <textElement ID="S" KEY="P_WTIME" ENTRY="        Temps entre deux tentatives" LENGTH="35 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  ZTEC_JOB_LAUNCHER
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp; Programme permettant de lancer un programme
+*&amp; une fois qu&apos;un Job est terminé ou alors de simplement
+*&amp; surveillé un Job en particulier
+*&amp;---------------------------------------------------------------------*
+
+***------------------------------------------------------------------***
+**                             INCLUDE                                **
+***------------------------------------------------------------------***
+
+&quot; Include déclaration données
+INCLUDE ztec_job_launcher_top.
+
+&quot; Include Ecran de sélection
+INCLUDE ztec_job_launcher_sel.
+
+&quot; Include Définition Classes
+INCLUDE ztec_job_launcher_c01.
+
+&quot; Include Implémentation Classes
+INCLUDE ztec_job_launcher_c02.
+
+***==================================================================***
+**                           INITIALIZATION                           **
+***==================================================================***
+INITIALIZATION.
+  &quot; Initialisatino
+  go_main = lcl_main=&gt;initialization( ).
+
+***==================================================================***
+**                         AT SELECTION-SCREEN                        **
+***==================================================================***
+AT SELECTION-SCREEN.
+  &quot; Evènement Ecran de sélection
+  go_main-&gt;at_selection_screen( ).
+
+***==================================================================***
+**                     AT SELECTION-SCREEN OUTPUT                     **
+***==================================================================***
+AT SELECTION-SCREEN OUTPUT.
+  &quot; Modification affichage
+  go_main-&gt;at_selection_screen_output( ).
+
+***==================================================================***
+**                AT SELECTION-SCREEN ON VALUE REQUEST                **
+***==================================================================***
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_vari.
+  &quot; Variante - Aide à la recherche
+  go_main-&gt;variant_value_request( ).
+
+***==================================================================***
+**                         START-OF-SELECTION                         **
+***==================================================================***
+START-OF-SELECTION.
+
+***==================================================================***
+**                             TRAITEMENT                             **
+***==================================================================***
+
+  &quot; -----------------------------------------------------------
+  &quot; Traitement principal
+  &quot; -----------------------------------------------------------
+
+  go_main-&gt;process( ).
+
+END-OF-SELECTION.</source>
+ </PROG>
+ <PROG NAME="ZTEC_JOB_LAUNCHER_TOP" VARCL="X" SUBC="I" APPL="*" RSTAT="K" RMAND="400" RLOAD="F" UCCHECK="X">
+  <textPool>
+   <language SPRAS="F">
+    <textElement ID="R" ENTRY="Include déclaration types / données" LENGTH="35 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp;  Include           ZTEC_JOB_LAUNCHER_TOP
+*&amp;---------------------------------------------------------------------*
+
+REPORT ztec_job_launcher.
+
+***------------------------------------------------------------------***
+**                             INCLUDE                                **
+***------------------------------------------------------------------***
+
+&quot; Include constant Job
+INCLUDE lbtchdef.
+
+***------------------------------------------------------------------***
+**                               MACRO                                **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                             CLASSES                                **
+***------------------------------------------------------------------***
+CLASS lcl_main DEFINITION DEFERRED.
+
+***------------------------------------------------------------------***
+**                              TYPES                                 **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                           CONSTANTES                               **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                             RANGES                                 **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                             TABLES                                 **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                            STRUCTURE                               **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                            INSTANCES                               **
+***------------------------------------------------------------------***
+DATA : go_main TYPE REF TO lcl_main.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+
+
+***------------------------------------------------------------------***
+**                          FIELD-SYMBOLS                             **
+***------------------------------------------------------------------***</source>
+ </PROG>
+ <PROG NAME="ZTEC_JOB_LAUNCHER_SEL" VARCL="X" SUBC="I" APPL="*" RSTAT="K" RMAND="400" RLOAD="F" UCCHECK="X">
+  <textPool>
+   <language SPRAS="F">
+    <textElement ID="R" ENTRY="Include Ecran de sélection" LENGTH="29 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp;  Include           ZTEC_JOB_LAUNCHER_SEL
+*&amp;---------------------------------------------------------------------*
+
+
+***==================================================================***
+**                         SELECTION-SCREEN                           **
+***==================================================================***
+
+
+&quot; -----------------------------------------------------------
+&quot; Sélection du Job à surveiller
+&quot; -----------------------------------------------------------
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE text-tb1.
+
+&quot; Nom du Job
+PARAMETERS : p_job TYPE tbtco-jobname OBLIGATORY.
+
+&quot; Compteur de Job
+PARAMETERS : p_jcount TYPE tbtco-jobcount.
+
+&quot; Juste surveillance
+PARAMETERS : p_spy AS CHECKBOX USER-COMMAND uc5.
+
+SELECTION-SCREEN END OF BLOCK b1.
+
+&quot; -----------------------------------------------------------
+&quot; Sélection du Programme à lancer
+&quot; -----------------------------------------------------------
+
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-tb2.
+
+&quot; Nom du Programme
+PARAMETERS : p_repid TYPE programm MODIF ID id2.
+
+&quot; Nom Variante
+PARAMETERS : p_vari TYPE vari-variant MODIF ID id2.
+
+SELECTION-SCREEN END OF BLOCK b2.
+
+&quot; -----------------------------------------------------------
+&quot; Paramètres d&apos;exécution
+&quot; -----------------------------------------------------------
+
+SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE text-tb3.
+
+&quot; Utilisateur de Lancement
+PARAMETERS : p_user TYPE sy-uname DEFAULT &apos;USER_BATCH&apos; MODIF ID id2. &quot;#EC NOTEXT
+
+SELECTION-SCREEN SKIP.
+
+&quot; Temps entre chaque tentative
+PARAMETERS : p_wtime TYPE i OBLIGATORY DEFAULT 1.
+
+&quot; Unité de temps
+SELECTION-SCREEN BEGIN OF LINE.
+
+&quot; Seconde
+SELECTION-SCREEN COMMENT 10(7) text-001 FOR FIELD p_wsec.
+SELECTION-SCREEN POSITION 17.
+PARAMETERS : p_wsec RADIOBUTTON GROUP rg1  DEFAULT &apos;X&apos; USER-COMMAND uc1.
+
+&quot; Minute
+SELECTION-SCREEN COMMENT 23(7) text-002 FOR FIELD p_wmin.
+SELECTION-SCREEN POSITION 30.
+PARAMETERS : p_wmin RADIOBUTTON GROUP rg1.
+
+&quot; Heure
+SELECTION-SCREEN COMMENT 36(7) text-003 FOR FIELD p_whou.
+SELECTION-SCREEN POSITION 43.
+PARAMETERS : p_whou RADIOBUTTON GROUP rg1.
+
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN SKIP.
+
+&quot; Temps limite
+PARAMETERS : p_ltime TYPE i DEFAULT 1.
+
+&quot; Unité de temps
+SELECTION-SCREEN BEGIN OF LINE.
+
+&quot; Seconde
+SELECTION-SCREEN COMMENT 10(7) text-001 FOR FIELD p_lsec.
+SELECTION-SCREEN POSITION 17.
+PARAMETERS : p_lsec RADIOBUTTON GROUP rg2 USER-COMMAND uc2.
+
+&quot; Minute
+SELECTION-SCREEN COMMENT 23(7) text-002 FOR FIELD p_lmin.
+SELECTION-SCREEN POSITION 30.
+PARAMETERS : p_lmin RADIOBUTTON GROUP rg2.
+
+&quot; Heure
+SELECTION-SCREEN COMMENT 36(7) text-003 FOR FIELD p_lhou.
+SELECTION-SCREEN POSITION 43.
+PARAMETERS : p_lhou RADIOBUTTON GROUP rg2 DEFAULT &apos;X&apos;.
+
+&quot; Infini
+SELECTION-SCREEN COMMENT 56(7) text-004 FOR FIELD p_linf.
+SELECTION-SCREEN POSITION 53.
+PARAMETERS : p_linf RADIOBUTTON GROUP rg2.
+
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN SKIP.
+
+&quot; Exécuter après un temps donnée ?
+PARAMETERS : p_decal AS CHECKBOX USER-COMMAND uc4.
+
+&quot; Temps avant exécution
+PARAMETERS : p_dtime TYPE i MODIF ID id1.
+
+&quot; Unité de temps
+SELECTION-SCREEN BEGIN OF LINE.
+
+&quot; Seconde
+SELECTION-SCREEN COMMENT 10(7) text-001 FOR FIELD p_dsec MODIF ID id1.
+SELECTION-SCREEN POSITION 17.
+PARAMETERS : p_dsec RADIOBUTTON GROUP rg3 DEFAULT &apos;X&apos; USER-COMMAND uc3 MODIF ID id1.
+
+&quot; Minute
+SELECTION-SCREEN COMMENT 23(7) text-002 FOR FIELD p_dmin MODIF ID id1.
+SELECTION-SCREEN POSITION 30.
+PARAMETERS : p_dmin RADIOBUTTON GROUP rg3 MODIF ID id1.
+
+&quot; Heure
+SELECTION-SCREEN COMMENT 36(7) text-003 FOR FIELD p_dhou MODIF ID id1.
+SELECTION-SCREEN POSITION 43.
+PARAMETERS : p_dhou RADIOBUTTON GROUP rg3 MODIF ID id1.
+
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN END OF BLOCK b3.</source>
+ </PROG>
+ <PROG NAME="ZTEC_JOB_LAUNCHER_C01" VARCL="X" SUBC="I" APPL="*" RSTAT="K" RMAND="400" RLOAD="F" UCCHECK="X">
+  <textPool>
+   <language SPRAS="F">
+    <textElement ID="R" ENTRY="Include déclaration définition classes" LENGTH="38 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp;  Include           ZTEC_JOB_LAUNCHER_C01
+*&amp;---------------------------------------------------------------------*
+
+INTERFACE lif_constant.
+
+  &quot; Utilisateur
+  CONSTANTS : mc_user_default TYPE sy-uname VALUE &apos;USER_BATCH&apos;. &quot;#EC NOTEXT
+
+  &quot; -----------------------------------------------------------
+  &quot; Temps - Mode
+  &quot; -----------------------------------------------------------
+
+  CONSTANTS : mc_time_mode_hour TYPE i VALUE 3. &quot;Heure &quot;#EC NOTEXT
+  CONSTANTS : mc_time_mode_minute TYPE i VALUE 2. &quot;Minute &quot;#EC NOTEXT
+  CONSTANTS : mc_time_mode_second TYPE i VALUE 1. &quot;Seconde &quot;#EC NOTEXT
+  CONSTANTS : mc_time_mode_infinite TYPE i VALUE 4. &quot;Infini &quot;#EC NOTEXT
+
+  &quot; -----------------------------------------------------------
+  &quot; Temps - Unité
+  &quot; -----------------------------------------------------------
+
+  CONSTANTS : mc_time_unit_hour TYPE t006-msehi VALUE &apos;H&apos;. &quot;Heure &quot;#EC NOTEXT
+  CONSTANTS : mc_time_unit_minute TYPE t006-msehi VALUE &apos;MIN&apos;. &quot;Minute &quot;#EC NOTEXT
+  CONSTANTS : mc_time_unit_second TYPE t006-msehi VALUE &apos;S&apos;. &quot;Seconde &quot;#EC NOTEXT
+
+  &quot; Temps Infini
+  CONSTANTS : mc_timestamp_infinite TYPE timestamp VALUE &apos;99991231235959&apos;. &quot;#EC NOTEXT
+
+ENDINTERFACE.
+
+*----------------------------------------------------------------------*
+*       CLASS LCL_main DEFINIION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_main DEFINITION FINAL CREATE PRIVATE.
+
+*-- Publique
+  PUBLIC SECTION.
+
+***------------------------------------------------------------------***
+**                              TYPES                                 **
+***------------------------------------------------------------------***
+
+*   Déclaration de type
+
+
+***------------------------------------------------------------------***
+**                           MÉTHODES                                 **
+***------------------------------------------------------------------***
+
+*	Déclaration de méthodes
+
+    &quot; Initialisation
+    CLASS-METHODS initialization
+      RETURNING VALUE(ro_main) TYPE REF TO lcl_main.
+
+    &quot; Ecran de Sélection
+    METHODS at_selection_screen.
+
+    &quot; Modification Ecran de Sélection
+    METHODS at_selection_screen_output.
+
+    &quot; Variante - Aide à la recherche
+    METHODS variant_value_request.
+
+    &quot; Traitement
+    METHODS process
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+***------------------------------------------------------------------***
+**                           ÉVENEMENTS                               **
+***------------------------------------------------------------------***
+
+*	Déclaration d&apos;évènement
+
+***------------------------------------------------------------------***
+**                             HANDLER                                **
+***------------------------------------------------------------------***
+
+*	Déclaration des Handler
+
+***------------------------------------------------------------------***
+**                            ATTRIBUTS                               **
+***------------------------------------------------------------------***
+
+*	Déclaration d&apos;attributs
+
+
+*-- Privée
+  PRIVATE SECTION.
+
+***------------------------------------------------------------------***
+**                              TYPES                                 **
+***------------------------------------------------------------------***
+
+*   Déclaration de type
+
+    &quot; Container - Critère de temps
+    TYPES :
+      BEGIN OF ty_time_criteria,
+        time TYPE REF TO i,
+        mode TYPE        i,
+        unit TYPE        t006-msehi,
+      END OF   ty_time_criteria.
+
+    &quot; Ecran de sélection - Container
+    TYPES :
+      BEGIN OF ty_selection_criteria,
+        ov_jobname  TYPE REF TO tbtco-jobname,
+        ov_jobcount TYPE REF TO tbtco-jobcount,
+        ov_spy      TYPE REF TO flag,
+        ov_repid    TYPE REF TO programm,
+        ov_vari     TYPE REF TO raldb_vari,
+        ov_decal    TYPE REF TO flag,
+        ov_user     TYPE REF TO sy-uname,
+        time_wait   TYPE        ty_time_criteria,
+        time_limit  TYPE        ty_time_criteria,
+        time_decal  TYPE        ty_time_criteria,
+      END OF   ty_selection_criteria.
+
+    &quot; Données Job - Container
+    TYPES :
+      BEGIN OF ty_tbtco,
+        jobname   TYPE tbtco-jobname,   &quot;Nom
+        jobcount  TYPE tbtco-jobcount,  &quot;Compteur
+        sdlstrtdt TYPE tbtco-sdlstrtdt, &quot;Date de lancement
+        sdlstrttm TYPE tbtco-sdlstrttm, &quot;Heure de lancement
+        reldate   TYPE tbtco-reldate,   &quot;Date d&apos;exécution
+        reltime   TYPE tbtco-reltime,   &quot;Heure d&apos;exécution
+        status    TYPE tbtco-status,    &quot;Statut
+      END OF   ty_tbtco.
+
+    TYPES : ty_t_tbtco TYPE STANDARD TABLE OF ty_tbtco
+                          WITH NON-UNIQUE KEY primary_key COMPONENTS jobname jobcount.
+
+***------------------------------------------------------------------***
+**                           MÉTHODES                                 **
+***------------------------------------------------------------------***
+
+*	Déclaration de méthodes
+
+    &quot; Constructeur
+    METHODS constructor.
+
+    &quot; Initialisation Temps Mode et Unité
+    METHODS time_mode_set.
+
+    &quot; Contrôle des données saisies
+    METHODS selection_criteria_check
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+    &quot; Lance le traitement en arrière-plan
+    METHODS job_background_start
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+    &quot; Récupération des données
+    METHODS job_wait_finished
+      EXPORTING
+                es_tbtco        TYPE ty_tbtco
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+    &quot; Temps - Conversion en Seconde
+    METHODS time_convert_2_second
+      IMPORTING
+                iv_mode        TYPE i
+                iv_time        TYPE i
+      RETURNING VALUE(rv_time) TYPE i.
+
+    &quot; Temps - Détermination Borne
+    METHODS time_limit_determine
+      EXPORTING
+                ev_timestamp_beg TYPE timestamp
+                ev_timestamp_end TYPE timestamp
+      RETURNING VALUE(rv_subrc)  TYPE sy-subrc.
+
+    &quot; Job - Récupération du Job à surveiller
+    METHODS job_get
+      IMPORTING
+                iv_jobcount     TYPE tbtco-jobcount OPTIONAL
+      RETURNING VALUE(rs_tbtco) TYPE ty_tbtco.
+
+    &quot; Job - Exécution
+    METHODS job_execution
+      IMPORTING
+                is_tbtco        TYPE ty_tbtco
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+    &quot; Job - Fin de la surveillance
+    METHODS job_spy_finish
+      RETURNING VALUE(rv_subrc) TYPE sy-subrc.
+
+***------------------------------------------------------------------***
+**                           ÉVENEMENTS                               **
+***------------------------------------------------------------------***
+
+*	Déclaration d&apos;évènement
+
+***------------------------------------------------------------------***
+**                             HANDLER                                **
+***------------------------------------------------------------------***
+
+*	Déclaration des Handler
+
+***------------------------------------------------------------------***
+**                            ATTRIBUTS                               **
+***------------------------------------------------------------------***
+
+*	Déclaration d&apos;attributs
+
+    DATA : mv_jobcount TYPE tbtco-jobcount.
+    DATA : ms_selection_criteria TYPE ty_selection_criteria.
+
+ENDCLASS.             &quot;lcl_main DEFINITION</source>
+ </PROG>
+ <PROG NAME="ZTEC_JOB_LAUNCHER_C02" VARCL="X" SUBC="I" APPL="*" RSTAT="K" RMAND="400" RLOAD="F" UCCHECK="X">
+  <textPool>
+   <language SPRAS="F">
+    <textElement ID="R" ENTRY="Include déclaration implémentation classes" LENGTH="42 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp;  Include           ZTEC_JOB_LAUNCHER_C02
+*&amp;---------------------------------------------------------------------*
+
+
+*----------------------------------------------------------------------*
+*       CLASS LCL_main IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_main IMPLEMENTATION.
+
+  METHOD initialization.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Création instance
+    &quot; -----------------------------------------------------------
+
+    &quot; Création instance Principale
+    CREATE OBJECT ro_main.
+
+  ENDMETHOD.
+
+  METHOD constructor.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Initialisation attribut
+    &quot; -----------------------------------------------------------
+
+    me-&gt;ms_selection_criteria-ov_spy          = REF #( p_spy ).   &quot;Surveillance uniquement
+    me-&gt;ms_selection_criteria-ov_vari         = REF #( p_vari ).   &quot;Variante
+    me-&gt;ms_selection_criteria-ov_user         = REF #( p_user ).   &quot;Utilisateur de lancement du Programme
+    me-&gt;ms_selection_criteria-ov_decal        = REF #( p_decal ).  &quot;Décale l&apos;exécution ?
+    me-&gt;ms_selection_criteria-ov_repid        = REF #( p_repid ).  &quot;Programme
+    me-&gt;ms_selection_criteria-ov_jobname      = REF #( p_job ).    &quot;Nom du Job
+    me-&gt;ms_selection_criteria-ov_jobcount     = REF #( p_jcount ). &quot;N° Job
+    me-&gt;ms_selection_criteria-time_wait-time  = REF #( p_wtime ).  &quot;Temps attente
+    me-&gt;ms_selection_criteria-time_limit-time = REF #( p_ltime ).  &quot;Temps limite
+    me-&gt;ms_selection_criteria-time_decal-time = REF #( p_dtime ).  &quot;Temps de décalage
+
+  ENDMETHOD.
+
+  METHOD at_selection_screen.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Evènement Ecran de Sélection
+    &quot; -----------------------------------------------------------
+
+    &quot; Suivant l&apos;Action utilisateur
+    CASE sy-ucomm.
+
+      WHEN &apos;UC1&apos;.                                           &quot;#EC NOTEXT
+        &quot; Temps deux tentative
+
+      WHEN &apos;UC2&apos;.                                           &quot;#EC NOTEXT
+        &quot; Temps Limite
+        CASE abap_true.
+
+          WHEN p_linf.
+            &quot; Infini
+            me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_infinite.
+            CLEAR : me-&gt;ms_selection_criteria-time_limit-unit.
+
+          WHEN OTHERS.
+            &quot; Autres
+
+        ENDCASE.
+
+      WHEN &apos;UC3&apos;.                                           &quot;#EC NOTEXT
+        &quot; Temps Décalage
+        CASE abap_true.
+
+          WHEN p_linf.
+            &quot; Infini
+            CLEAR : me-&gt;ms_selection_criteria-time_decal-unit.
+
+        ENDCASE.
+
+      WHEN &apos;UC4&apos;.
+        &quot; Décalage
+
+      WHEN &apos;UC5&apos;.
+        &quot; Surveillance
+
+      WHEN OTHERS.
+        &quot; Autres
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+  METHOD at_selection_screen_output.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_modify TYPE flag.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Modification Ecran de sélection
+    &quot; -----------------------------------------------------------
+
+    LOOP AT SCREEN.
+
+      CLEAR : lv_modify.
+
+      &quot; Suivant le groupe
+      CASE screen-group1.
+
+        WHEN &apos;ID1&apos;.
+          &quot; Groupe Décalage exécution
+          IF  me-&gt;ms_selection_criteria-ov_decal-&gt;* EQ abap_true.
+            &quot; Décalage
+            &quot;&quot;  --&gt; Rend Visible le groupe
+            screen-active    = 1.
+            screen-invisible = 0.
+
+          ELSE.
+            &quot; Pas de décalage
+            &quot;&quot;  --&gt; Rend Invisible le groupe
+            screen-active    = 0.
+            screen-invisible = 1.
+            CLEAR : me-&gt;ms_selection_criteria-time_decal-time-&gt;*.
+
+          ENDIF.
+
+          &quot;&quot;  --&gt; Initialisation indicateur MàJ
+          lv_modify = abap_true.
+
+        WHEN &apos;ID2&apos;.
+          &quot; Groupe Programme
+          IF me-&gt;ms_selection_criteria-ov_spy-&gt;* EQ abap_true.
+            &quot; Surveillance uniquement
+            &quot;&quot;  --&gt; Active le groupe
+            screen-input  = 0.
+            screen-active = 0.
+
+          ELSE.
+            &quot; Pas de Surveillance
+            &quot;&quot;  --&gt; Active le groupe
+            screen-input  = 1.
+            screen-active = 1.
+            CLEAR : me-&gt;ms_selection_criteria-time_decal-time-&gt;*.
+
+          ENDIF.
+
+          &quot;&quot;  --&gt; Initialisation indicateur MàJ
+          lv_modify = abap_true.
+
+        WHEN OTHERS.
+          &quot; Autres
+
+      ENDCASE.
+
+      &quot; Suivant l&apos;élément
+      CASE screen-name.
+
+        WHEN &apos;P_LTIME&apos;.
+          &quot; Limite de Temps
+          IF me-&gt;ms_selection_criteria-time_limit-mode EQ lif_constant=&gt;mc_time_mode_infinite.
+            &quot; Temps infini
+            &quot;&quot;  --&gt; Grise la saisie
+            screen-input = 0.
+
+            &quot;&quot;  --&gt; Réinitialise la zone
+            CLEAR me-&gt;ms_selection_criteria-time_limit-time-&gt;*.
+
+          ELSE.
+            &quot; Temps fini
+            &quot;&quot;  --&gt; Active la saisie
+            screen-input = 1.
+
+          ENDIF.
+
+          &quot;&quot;  --&gt; Initialisation indicateur MàJ
+          lv_modify = abap_true.
+
+        WHEN &apos;P_DTIME&apos;.
+          &quot; Temps de décalage
+          IF me-&gt;ms_selection_criteria-ov_decal-&gt;* EQ abap_true.
+            &quot; Activé
+            &quot;&quot;  --&gt; Rend la zone obligatoire
+            screen-required = 2.
+
+          ELSE.
+            &quot; Désactivé
+            &quot;&quot;  --&gt; Supprime l&apos;obligation
+            screen-required = 0.
+            CLEAR : me-&gt;ms_selection_criteria-time_decal-time-&gt;*.
+
+          ENDIF.
+
+          &quot;&quot;  --&gt; Initialisation indicateur MàJ
+          lv_modify = abap_true.
+
+        WHEN OTHERS.
+          &quot; Autres
+
+      ENDCASE.
+
+      IF lv_modify EQ abap_true.
+        &quot; Modification de l&apos;écran
+        MODIFY SCREEN.
+
+      ENDIF.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD variant_value_request.
+
+***------------------------------------------------------------------***
+**                             TABLES                                 **
+***------------------------------------------------------------------***
+    DATA :
+      lt_dynpfields TYPE dynpread_t.
+
+***------------------------------------------------------------------***
+**                            STRUCTURE                               **
+***------------------------------------------------------------------***
+    DATA :
+      ls_dynpfields TYPE dynpread.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    CLEAR : me-&gt;ms_selection_criteria-ov_vari-&gt;*.
+
+    &quot; -----------------------------------------------------------
+    &quot; Variante - Aide à la recherche
+    &quot; -----------------------------------------------------------
+
+    &quot; Récupération valeur saisie Programme
+    ls_dynpfields-fieldname = &apos;P_REPID&apos;.
+    APPEND ls_dynpfields TO lt_dynpfields.
+    CALL FUNCTION &apos;DYNP_VALUES_READ&apos;
+      EXPORTING
+        dyname     = sy-repid
+        dynumb     = sy-dynnr
+      TABLES
+        dynpfields = lt_dynpfields
+      EXCEPTIONS
+        OTHERS     = 0.
+
+    TRY.
+        &quot; Initialisation valeur Programme saisi
+        me-&gt;ms_selection_criteria-ov_repid-&gt;* = lt_dynpfields[ 1 ]-fieldvalue.
+
+      CATCH cx_sy_itab_line_not_found.
+        &quot; Aucune entrée
+
+    ENDTRY.
+
+    &quot; Récupération variante du programme
+    CALL FUNCTION &apos;RS_VARIANT_CATALOG&apos;
+      EXPORTING
+        report               = me-&gt;ms_selection_criteria-ov_repid-&gt;*
+        internal_call        = abap_true
+      IMPORTING
+        sel_variant          = me-&gt;ms_selection_criteria-ov_vari-&gt;*
+      EXCEPTIONS
+        no_report            = 1
+        report_not_existent  = 2
+        report_not_supplied  = 3
+        no_variants          = 4
+        no_variant_selected  = 5
+        variant_not_existent = 6
+        OTHERS               = 7.
+    IF sy-subrc NE 0.
+      &quot; Aucune variante définie
+      &quot;&quot;  --&gt; Arrêt du traitement
+      CLEAR me-&gt;ms_selection_criteria-ov_vari-&gt;*.
+      RETURN.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD process.
+
+***------------------------------------------------------------------***
+**                            STRUCTURE                               **
+***------------------------------------------------------------------***
+    DATA :
+      ls_tbtco TYPE ty_tbtco.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_subrc TYPE sy-subrc.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle saisi
+    &quot; -----------------------------------------------------------
+
+    lv_subrc = me-&gt;selection_criteria_check( ).
+
+    IF lv_subrc IS INITIAL.
+      &quot; -----------------------------------------------------------
+      &quot; Lance le même traitement en arrière-plan
+      &quot; -----------------------------------------------------------
+
+      me-&gt;time_mode_set( ).
+
+    ENDIF.
+
+    IF lv_subrc IS INITIAL.
+
+      IF sy-batch EQ abap_false.
+        &quot; -----------------------------------------------------------
+        &quot; Lance le même traitement en arrière-plan
+        &quot; -----------------------------------------------------------
+
+        lv_subrc = me-&gt;job_background_start( ).
+
+      ELSE.
+        &quot; -----------------------------------------------------------
+        &quot; Attente fin du Job
+        &quot; -----------------------------------------------------------
+
+        lv_subrc = me-&gt;job_wait_finished( IMPORTING es_tbtco = ls_tbtco ).
+
+
+        IF lv_subrc IS INITIAL.
+          &quot; -----------------------------------------------------------
+          &quot; Traitement final en fonction du Statut du Job
+          &quot; -----------------------------------------------------------
+
+          IF me-&gt;ms_selection_criteria-ov_spy-&gt;* EQ abap_false.
+            &quot; Exécution du Traitement
+            lv_subrc = me-&gt;job_execution( ls_tbtco ).
+
+          ELSE.
+            &quot; Message succès
+            lv_subrc = me-&gt;job_spy_finish( ).
+
+          ENDIF.
+
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD selection_criteria_check.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_name    TYPE trdir-name,
+      lv_subrc   TYPE sy-subrc,
+      lv_jobname TYPE tbtco-jobname.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle cohérence saisi temps de Décalage
+    &quot; -----------------------------------------------------------
+
+    IF me-&gt;ms_selection_criteria-ov_decal-&gt;* EQ abap_true.
+      &quot; Décale l&apos;exécution du Programme
+      IF me-&gt;ms_selection_criteria-time_decal-time-&gt;* IS INITIAL.
+        &quot; Aucun Temps saisi
+        &quot;&quot;  --&gt; Affiche message d&apos;erreur
+        rv_subrc = 1.
+        MESSAGE s002(zjob) DISPLAY LIKE &apos;E&apos;.
+
+      ENDIF.
+
+    ENDIF.
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle Utilisateur de Lancement
+    &quot; -----------------------------------------------------------
+
+    IF me-&gt;ms_selection_criteria-ov_user-&gt;* IS INITIAL.
+      &quot; Aucun utilisateur saisi
+      &quot;&quot;  --&gt; Utilisation de l&apos;utilisateur &apos;USER_BATCH&apos;
+      me-&gt;ms_selection_criteria-ov_user-&gt;* = lif_constant=&gt;mc_user_default.
+
+    ENDIF.
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle Job à surveiller
+    &quot; -----------------------------------------------------------
+
+    IF NOT me-&gt;ms_selection_criteria-ov_jobcount-&gt;* IS INITIAL.
+      &quot; Job précis
+      &quot;&quot;  --&gt; Recherche si le Job existe et n&apos;est pas terminé
+      SELECT SINGLE jobname
+               FROM tbtco INTO lv_jobname
+                         WHERE jobname  EQ me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                           AND jobcount EQ me-&gt;ms_selection_criteria-ov_jobcount-&gt;*
+                           AND status   IN (btc_running, btc_ready, btc_scheduled, btc_released, btc_put_active).
+      IF sy-subrc NE 0.
+        &quot; Le Job n&apos;existe pas ou est déjà fini
+        &quot;&quot;  --&gt; Arrêt du traitement
+        MESSAGE s001(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                me-&gt;ms_selection_criteria-ov_jobcount-&gt;*
+                   DISPLAY LIKE &apos;E&apos;.                        &quot;#EC NOTEXT
+        RETURN.
+
+      ENDIF.
+
+    ENDIF.
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle Programme à exécuter
+    &quot; -----------------------------------------------------------
+
+    IF me-&gt;ms_selection_criteria-ov_spy-&gt;* EQ abap_false.
+
+      IF me-&gt;ms_selection_criteria-ov_repid-&gt;* IS INITIAL.
+        &quot; Aucun Programme saisi
+        &quot;&quot;  --&gt; Affiche message d&apos;erreur
+        rv_subrc = 6.
+        MESSAGE s063(nf1) DISPLAY LIKE &apos;E&apos;.                 &quot;#EC NOTEXT
+        RETURN.
+
+      ENDIF.
+
+      &quot; Contrôle existence Programme
+      SELECT SINGLE name FROM trdir
+                         INTO lv_name
+                        WHERE name EQ me-&gt;ms_selection_criteria-ov_repid-&gt;*.
+      IF sy-subrc NE 0.
+        &quot; Le programme n&apos;existe pas
+        &quot;&quot;  --&gt; Affiche message d&apos;erreur
+        rv_subrc = 2.
+        MESSAGE s205(1b) WITH me-&gt;ms_selection_criteria-ov_repid-&gt;*
+                 DISPLAY LIKE &apos;E&apos;.                          &quot;#EC NOTEXT
+        RETURN.
+
+      ENDIF.
+
+      &quot; Contrôle existence Programme Variante
+      IF NOT me-&gt;ms_selection_criteria-ov_vari-&gt;* IS INITIAL.
+        &quot; Contrôle existence Programme / Variante
+        CALL FUNCTION &apos;RS_VARIANT_EXISTS&apos;
+          EXPORTING
+            report              = me-&gt;ms_selection_criteria-ov_repid-&gt;*
+            variant             = me-&gt;ms_selection_criteria-ov_vari-&gt;*
+          IMPORTING
+            r_c                 = lv_subrc
+          EXCEPTIONS
+            not_authorized      = 1
+            no_report           = 2
+            report_not_existent = 3
+            report_not_supplied = 4
+            OTHERS              = 5.
+        IF sy-subrc NE 0
+        OR lv_subrc NE 0.
+          &quot; La variante n&apos;existe pas
+          rv_subrc = 4.
+          MESSAGE s140(1m) WITH me-&gt;ms_selection_criteria-ov_vari-&gt;*
+                                me-&gt;ms_selection_criteria-ov_repid-&gt;*
+                  DISPLAY LIKE &apos;E&apos;.                         &quot;#EC NOTEXT
+          RETURN.
+
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD time_mode_set.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Initialisation Mode et Unité Temps entre deux Tentatives
+    &quot; -----------------------------------------------------------
+
+    &quot; Temps deux tentative
+    CASE abap_true.
+
+      WHEN p_wsec.
+        &quot; Seconde
+        me-&gt;ms_selection_criteria-time_wait-mode = lif_constant=&gt;mc_time_mode_second.
+        me-&gt;ms_selection_criteria-time_wait-unit = lif_constant=&gt;mc_time_unit_second.
+
+      WHEN p_wmin.
+        &quot; Minute
+        me-&gt;ms_selection_criteria-time_wait-mode = lif_constant=&gt;mc_time_mode_minute.
+        me-&gt;ms_selection_criteria-time_wait-unit = lif_constant=&gt;mc_time_unit_minute.
+
+      WHEN p_whou.
+        &quot; Heure
+        me-&gt;ms_selection_criteria-time_wait-mode = lif_constant=&gt;mc_time_mode_hour.
+        me-&gt;ms_selection_criteria-time_wait-unit = lif_constant=&gt;mc_time_unit_hour.
+
+      WHEN OTHERS.
+        &quot; Autres
+        me-&gt;ms_selection_criteria-time_wait-mode = lif_constant=&gt;mc_time_mode_minute.
+        me-&gt;ms_selection_criteria-time_wait-unit = lif_constant=&gt;mc_time_unit_minute.
+
+    ENDCASE.
+
+    &quot; -----------------------------------------------------------
+    &quot; Initialisation Mode et Unité Temps Limite
+    &quot; -----------------------------------------------------------
+
+    &quot; Temps Limite
+    CASE abap_true.
+
+      WHEN p_lsec.
+        &quot; Seconde
+        me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_second.
+        me-&gt;ms_selection_criteria-time_limit-unit = lif_constant=&gt;mc_time_unit_second.
+
+      WHEN p_lmin.
+        &quot; Minute
+        me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_minute.
+        me-&gt;ms_selection_criteria-time_limit-unit = lif_constant=&gt;mc_time_unit_minute.
+
+      WHEN p_lhou.
+        &quot; Heure
+        me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_hour.
+        me-&gt;ms_selection_criteria-time_limit-unit = lif_constant=&gt;mc_time_unit_hour.
+
+      WHEN p_linf.
+        &quot; Infini
+        me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_infinite.
+        CLEAR : me-&gt;ms_selection_criteria-time_limit-unit.
+
+      WHEN OTHERS.
+        &quot; Autres
+        me-&gt;ms_selection_criteria-time_limit-mode = lif_constant=&gt;mc_time_mode_hour.
+        me-&gt;ms_selection_criteria-time_limit-unit = lif_constant=&gt;mc_time_mode_hour.
+
+    ENDCASE.
+
+    &quot; -----------------------------------------------------------
+    &quot; Initialisation Mode et Unité Temps Décalage
+    &quot; -----------------------------------------------------------
+
+    &quot; Temps Décalage
+    CASE abap_true.
+
+      WHEN p_dsec.
+        &quot; Seconde
+        me-&gt;ms_selection_criteria-time_decal-mode = lif_constant=&gt;mc_time_mode_second.
+        me-&gt;ms_selection_criteria-time_decal-unit = lif_constant=&gt;mc_time_unit_second.
+
+      WHEN p_dmin.
+        &quot; Minute
+        me-&gt;ms_selection_criteria-time_decal-mode = lif_constant=&gt;mc_time_mode_minute.
+        me-&gt;ms_selection_criteria-time_decal-unit = lif_constant=&gt;mc_time_unit_minute.
+
+      WHEN p_dhou.
+        &quot; Heure
+        me-&gt;ms_selection_criteria-time_decal-mode = lif_constant=&gt;mc_time_mode_hour.
+        me-&gt;ms_selection_criteria-time_decal-unit = lif_constant=&gt;mc_time_unit_hour.
+
+      WHEN OTHERS.
+        &quot; Autres
+        me-&gt;ms_selection_criteria-time_decal-mode = lif_constant=&gt;mc_time_mode_minute.
+        me-&gt;ms_selection_criteria-time_decal-unit = lif_constant=&gt;mc_time_mode_minute.
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+  METHOD job_background_start.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_linf  TYPE flag,
+      lv_lsec  TYPE flag,
+      lv_wtime TYPE i,
+      lv_dtime TYPE i,
+      lv_ltime TYPE i.
+
+    DATA :
+      lv_jobname  TYPE tbtco-jobname,
+      lv_jobcount TYPE tbtco-jobcount.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Création d&apos;un nouveau Job
+    &quot; -----------------------------------------------------------
+
+    lv_jobname = |JOB_LAUNCHER{ me-&gt;ms_selection_criteria-ov_repid-&gt;* }|.
+    CALL FUNCTION &apos;JOB_OPEN&apos;
+      EXPORTING
+        jobname          = lv_jobname
+      IMPORTING
+        jobcount         = lv_jobcount
+      EXCEPTIONS
+        cant_create_job  = 1
+        invalid_job_data = 2
+        jobname_missing  = 3
+        OTHERS           = 4.
+    IF sy-subrc EQ 0.
+      &quot; -----------------------------------------------------------
+      &quot; Lance le même programme en arrière-plan
+      &quot; -----------------------------------------------------------
+
+      &quot; Converti les temps en secondes
+      lv_wtime = me-&gt;time_convert_2_second( iv_mode = me-&gt;ms_selection_criteria-time_wait-mode  iv_time = me-&gt;ms_selection_criteria-time_wait-time-&gt;* ). &quot;Temps d&apos;Attente
+      lv_dtime = me-&gt;time_convert_2_second( iv_mode = me-&gt;ms_selection_criteria-time_decal-mode iv_time = me-&gt;ms_selection_criteria-time_decal-time-&gt;* ). &quot;Temps Décalagte
+      lv_ltime = me-&gt;time_convert_2_second( iv_mode = me-&gt;ms_selection_criteria-time_limit-mode iv_time = me-&gt;ms_selection_criteria-time_limit-time-&gt;* ). &quot;Temps Limite
+
+      &quot; Détermine le choix de l&apos;utilisateur
+      lv_linf = boolc( me-&gt;ms_selection_criteria-time_limit-mode EQ lif_constant=&gt;mc_time_mode_infinite ). &quot;Vrai si Temps Infini
+      lv_lsec = boolc( me-&gt;ms_selection_criteria-time_limit-mode NE lif_constant=&gt;mc_time_mode_infinite ). &quot;Vrai si Temps Fini
+
+      &quot; Lance le programme en arrière-plan
+      SUBMIT ztec_job_launcher WITH p_job    = me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                               WITH p_jcount = me-&gt;ms_selection_criteria-ov_jobcount-&gt;*
+                               WITH p_spy    = me-&gt;ms_selection_criteria-ov_spy-&gt;*
+                               WITH p_repid  = me-&gt;ms_selection_criteria-ov_repid-&gt;*
+                               WITH p_vari   = me-&gt;ms_selection_criteria-ov_vari-&gt;*
+                               WITH p_decal  = me-&gt;ms_selection_criteria-ov_decal-&gt;*
+                               WITH p_dtime  = lv_dtime
+                               WITH p_dsec   = abap_true
+                               WITH p_dmin   = abap_false
+                               WITH p_dhou   = abap_false
+                               WITH p_wtime  = lv_wtime
+                               WITH p_wsec   = abap_true
+                               WITH p_wmin   = abap_false
+                               WITH p_whou   = abap_false
+                               WITH p_ltime  = lv_ltime
+                               WITH p_lsec   = lv_lsec
+                               WITH p_lmin   = abap_false
+                               WITH p_lhou   = abap_false
+                               WITH p_linf   = lv_linf
+                            VIA JOB lv_jobname NUMBER lv_jobcount
+                                AND RETURN.
+
+      &quot; Démarrage du Job
+      CALL FUNCTION &apos;JOB_CLOSE&apos;
+        EXPORTING
+          jobcount             = lv_jobcount
+          jobname              = lv_jobname
+          strtimmed            = abap_true
+        EXCEPTIONS
+          cant_start_immediate = 1
+          invalid_startdate    = 2
+          jobname_missing      = 3
+          job_close_failed     = 4
+          job_nosteps          = 5
+          job_notex            = 6
+          lock_failed          = 7
+          error_message        = 8
+          OTHERS               = 9.
+
+    ENDIF.
+    IF sy-subrc NE 0.
+      &quot; Une erreur est survenue
+      &quot;&quot;  --&gt; Retourne code en erreur
+      rv_subrc = sy-subrc.
+      MESSAGE ID sy-msgid TYPE &apos;S&apos; NUMBER sy-msgno
+                                     WITH sy-msgv1
+                                          sy-msgv2
+                                          sy-msgv3
+                                          sy-msgv4
+                             DISPLAY LIKE sy-msgty.
+      RETURN.
+
+    ELSE.
+      &quot; Traitement lancé
+      MESSAGE s004(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD job_wait_finished.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_time_wait     TYPE i,
+      lv_timestamp_beg TYPE timestamp,
+      lv_timestamp_end TYPE timestamp.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    CLEAR : es_tbtco.
+
+    &quot; -----------------------------------------------------------
+    &quot; Détermination borne de traitement
+    &quot; -----------------------------------------------------------
+
+    &quot; Détermination Temps d&apos;attente limite
+    me-&gt;time_limit_determine(
+      IMPORTING
+        ev_timestamp_beg = lv_timestamp_beg
+        ev_timestamp_end = lv_timestamp_end
+    ).
+
+    &quot; Détermination Temps d&apos;attente entre chaque tentative
+    lv_time_wait = me-&gt;time_convert_2_second(
+                   iv_mode = me-&gt;ms_selection_criteria-time_wait-mode
+                   iv_time = me-&gt;ms_selection_criteria-time_wait-time-&gt;*
+    ).
+
+    &quot; -----------------------------------------------------------
+    &quot; Récupération du Job
+    &quot; -----------------------------------------------------------
+
+    &quot; Récupération du Job
+    es_tbtco = me-&gt;job_get( iv_jobcount = me-&gt;ms_selection_criteria-ov_jobcount-&gt;* ).
+
+    &quot; -----------------------------------------------------------
+    &quot; Attente fin du Job
+    &quot; -----------------------------------------------------------
+
+    &quot; Tant que le Temps limite n&apos;est pas atteint (ou que le Job n&apos;est pas terminé)
+    WHILE lv_timestamp_beg LT lv_timestamp_end.
+
+      IF es_tbtco-status EQ btc_aborted
+      OR es_tbtco-status EQ btc_finished
+      OR es_tbtco-status EQ btc_unknown_state.
+        &quot; Job terminé / anomalie / Inconnu
+        &quot;&quot;  --&gt; Arrêt de la boucle
+        EXIT.
+
+      ENDIF.
+
+      &quot; Attends entre deux tentatives
+      WAIT UP TO lv_time_wait SECONDS.
+
+      &quot; Actualisation du temps
+      GET TIME STAMP FIELD lv_timestamp_beg.
+
+      &quot; Récupération données atualisée du Job
+      es_tbtco = me-&gt;job_get( iv_jobcount = es_tbtco-jobcount ).
+
+    ENDWHILE.
+
+    &quot; -----------------------------------------------------------
+    &quot; Ajout message dans Protocole
+    &quot; -----------------------------------------------------------
+
+    &quot; Surveillance Job fini
+    MESSAGE s006(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                            me-&gt;ms_selection_criteria-ov_jobcount-&gt;*.
+
+  ENDMETHOD.
+
+  METHOD time_limit_determine.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    CLEAR : ev_timestamp_end, ev_timestamp_beg.
+
+    &quot; -----------------------------------------------------------
+    &quot; Détermination borne de traitement
+    &quot; -----------------------------------------------------------
+
+    &quot; Borne inférieur
+    GET TIME STAMP FIELD ev_timestamp_beg.
+
+    &quot; Borne supérieur
+    IF me-&gt;ms_selection_criteria-time_limit-mode LT lif_constant=&gt;mc_time_mode_infinite.
+      &quot; Temps fini
+      &quot;&quot;  --&gt; Ajout du temps défini
+      CALL FUNCTION &apos;TIMESTAMP_DURATION_ADD&apos;
+        EXPORTING
+          timestamp_in    = ev_timestamp_beg
+          timezone        = sy-zonlo
+          duration        = me-&gt;ms_selection_criteria-time_limit-time-&gt;*
+          unit            = me-&gt;ms_selection_criteria-time_limit-unit
+        IMPORTING
+          timestamp_out   = ev_timestamp_end
+        EXCEPTIONS
+          timestamp_error = 1
+          OTHERS          = 2.
+      IF sy-subrc NE 0.
+        &quot; Une erreur est survenue
+        &quot;&quot;  --&gt; Retourne le code d&apos;erreur
+        rv_subrc = sy-subrc.
+        RETURN.
+
+      ENDIF.
+
+    ELSE.
+      &quot; Temps infini
+      &quot;&quot;  --&gt; Initialisation valeur infi
+      ev_timestamp_end = lif_constant=&gt;mc_timestamp_infinite.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD time_convert_2_second.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Converti le Temps en Seconde
+    &quot; -----------------------------------------------------------
+
+    &quot; Suivant le Mode de temps
+    CASE iv_mode.
+
+      WHEN lif_constant=&gt;mc_time_mode_hour.
+        &quot; Heure
+        &quot;&quot;  --&gt; Converti en Heure
+        rv_time = iv_time * 3600.
+
+      WHEN lif_constant=&gt;mc_time_mode_minute.
+        &quot; Minute
+        &quot;&quot;  --&gt; Converti en Minute
+        rv_time = iv_time * 60.
+
+      WHEN lif_constant=&gt;mc_time_mode_second.
+        &quot; Seconde
+        &quot;&quot;  --&gt; Déjà en Seconde
+        rv_time = iv_time.
+
+      WHEN OTHERS.
+        &quot; Autres
+        &quot;&quot;  --&gt; Considère la Seconde
+        rv_time = iv_time.
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+  METHOD job_get.
+
+***------------------------------------------------------------------***
+**                             TABLES                                 **
+***------------------------------------------------------------------***
+    DATA :
+      lt_tbtco TYPE ty_t_tbtco.
+
+***------------------------------------------------------------------***
+**                            VARIABLES                               **
+***------------------------------------------------------------------***
+    DATA :
+      lv_status            TYPE tbtco-status,
+      lv_timestamp         TYPE timestamp,
+      lv_timestamp_gap     TYPE timestamp,
+      lv_timestamp_gap_tmp TYPE timestamp,
+      lv_timestamp_current TYPE timestamp.
+
+***------------------------------------------------------------------***
+**                          FIELD-SYMBOLS                             **
+***------------------------------------------------------------------***
+    FIELD-SYMBOLS :
+      &lt;lfs_s_tbtco&gt; TYPE ty_tbtco.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Détermination du Job à surveiller
+    &quot; -----------------------------------------------------------
+
+    IF NOT iv_jobcount IS INITIAL.
+      &quot; Job précis
+      &quot;&quot;  --&gt; Récupération du Job
+      SELECT SINGLE jobname   jobcount
+                    sdlstrtdt sdlstrttm
+                    reldate   reltime
+                    status
+               FROM tbtco INTO rs_tbtco
+                         WHERE jobname  EQ me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                           AND jobcount EQ iv_jobcount.
+      IF sy-subrc NE 0.
+        &quot; Ce cas ne devrait pas se produire (contrôle amont)
+        &quot;&quot;  --&gt; Arrêt du traitement
+        RETURN.
+
+      ENDIF.
+
+    ELSE.
+      &quot; Juste le nom
+      &quot;&quot;  --&gt; Récupération du dernier Job
+      SELECT jobname   jobcount
+             sdlstrtdt sdlstrttm
+             reldate   reltime
+             status
+        FROM tbtco INTO TABLE lt_tbtco
+                        WHERE jobname EQ me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                          AND (
+                                ( sdlstrtdt  GE sy-datum AND sdlstrttm  GE sy-uzeit )                              &quot;Soit les Dates de planification sont ultérieures au lancement
+                                OR status IN (btc_running, btc_ready, btc_scheduled, btc_released, btc_put_active) &quot;Soit le statut est ( En Cours / Planifié / Lancé / Prêt )
+                               ).
+
+      &quot;&quot; --&gt; Tri des Job par Statut puis par Date
+      SORT lt_tbtco BY jobname status sdlstrtdt sdlstrttm reldate reltime.
+
+      &quot;&quot;  --&gt; Récupération du Job &quot;Prêt&quot;
+      READ TABLE lt_tbtco WITH KEY jobname = me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                   status  = btc_ready
+                         ASSIGNING &lt;lfs_s_tbtco&gt;
+                            BINARY SEARCH.
+      IF sy-subrc NE 0.
+        &quot; Récupération du Job &quot;En cours&quot; d&apos;exécution
+        READ TABLE lt_tbtco WITH KEY jobname = me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                     status  = btc_running
+                           ASSIGNING &lt;lfs_s_tbtco&gt;
+                              BINARY SEARCH.
+
+      ENDIF.
+
+      IF NOT &lt;lfs_s_tbtco&gt; IS ASSIGNED.
+        &quot; Aucun Job déterminé
+        &quot;&quot;  --&gt; Détermination TimeStamp actuel
+        GET TIME STAMP FIELD lv_timestamp_current.
+
+        &quot;&quot;  --&gt; Récupération position première occurence Job Libéré
+        lv_status = btc_put_active.
+        READ TABLE lt_tbtco WITH KEY jobname = me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                     status  = btc_put_active
+                        TRANSPORTING NO FIELDS BINARY SEARCH.
+        IF sy-subrc NE 0.
+          &quot; Aucun Job libéré
+          &quot;&quot;  --&gt; Récupération position première occurence Job Planifié
+          lv_status = btc_scheduled.
+          READ TABLE lt_tbtco WITH KEY jobname = me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                       status  = btc_scheduled
+                          TRANSPORTING NO FIELDS BINARY SEARCH.
+
+
+        ENDIF.
+        IF sy-subrc NE 0.
+          &quot; Aucun Job éligible (pour le moment)
+          &quot;&quot;  --&gt; Arrêt du traitement
+          RETURN.
+
+        ENDIF.
+
+        &quot;&quot;  --&gt; Parcours l&apos;ensemble des Jobs correspondant
+        LOOP AT lt_tbtco ASSIGNING &lt;lfs_s_tbtco&gt;
+                              FROM sy-tabix.
+
+          CLEAR : lv_timestamp_gap_tmp.
+
+          IF &lt;lfs_s_tbtco&gt;-status NE lv_status.
+            &quot; On ne traite plus le même Statut
+            &quot;&quot;  --&gt; Arrêt de la boucle
+            EXIT.
+
+          ENDIF.
+
+          &quot; Initialisation Job
+          rs_tbtco = &lt;lfs_s_tbtco&gt;.
+
+          &quot; Contrôle d&apos;éligibilté suivant le statut
+          CASE lv_status.
+
+            WHEN btc_put_active.
+              &quot; Libéré // On prend le Job libéré dont la date de Libération est la plus proche de la Date actuelle
+              &quot;&quot;  --&gt; Détermination du Timestamp
+              CONVERT TIME &lt;lfs_s_tbtco&gt;-reltime DATE &lt;lfs_s_tbtco&gt;-reldate
+                                      INTO TIME STAMP lv_timestamp_gap_tmp
+                                            TIME ZONE sy-zonlo.
+
+            WHEN btc_scheduled.
+              &quot; Planifié // On prend le Job Planifié dont la date de Planification est la plus proche de la Date actuelle
+              &quot;&quot;  --&gt; Détermination du Timestamp
+              CONVERT TIME &lt;lfs_s_tbtco&gt;-sdlstrttm DATE &lt;lfs_s_tbtco&gt;-sdlstrtdt
+                                      INTO TIME STAMP lv_timestamp_gap_tmp
+                                            TIME ZONE sy-zonlo.
+
+            WHEN OTHERS.
+              &quot; Autres
+
+          ENDCASE.
+
+          &quot;&quot;  --&gt; Calcul de l&apos;écart par rapport à l&apos;entrée précédente
+          lv_timestamp_gap_tmp = abs( lv_timestamp_current - lv_timestamp_gap_tmp ).
+
+          &quot;&quot;  --&gt; Compare pour savoir quel version conservé
+          IF lv_timestamp_gap IS INITIAL
+          OR lv_timestamp_gap_tmp LE lv_timestamp_gap.
+            &quot; Date traitement plus proche que la précédente
+            &quot;&quot;  --&gt; Utilisation de ce Job
+            rs_tbtco = &lt;lfs_s_tbtco&gt;.
+
+            &quot;&quot;  --&gt; Initialisation nouvel Ecart
+            lv_timestamp_gap = lv_timestamp_gap_tmp.
+
+          ENDIF.
+
+        ENDLOOP.
+
+      ELSE.
+        &quot; Job correspondant aux critères
+        &quot;&quot;  --&gt; Retourne le Job
+        rs_tbtco = &lt;lfs_s_tbtco&gt;.
+
+      ENDIF.
+
+    ENDIF.
+
+    &quot; -----------------------------------------------------------
+    &quot; Ajout message dans le Protocole
+    &quot; -----------------------------------------------------------
+
+    IF NOT rs_tbtco IS INITIAL.
+      &quot; Job sélectionné
+      IF rs_tbtco-jobcount NE me-&gt;mv_jobcount.
+        &quot; Changement de Job
+        &quot;&quot;  --&gt; Indication Job surveillé
+        MESSAGE s004(zjob) WITH rs_tbtco-jobname
+                                rs_tbtco-jobcount.
+
+        &quot;&quot;  --&gt; Modification Numéro de Job
+        me-&gt;mv_jobcount = rs_tbtco-jobcount.
+
+      ENDIF.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD job_execution.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    &quot; -----------------------------------------------------------
+    &quot; Contrôle statut du Job
+    &quot; -----------------------------------------------------------
+
+    &quot; Suivant le Statut du Job
+    CASE is_tbtco-status.
+
+      WHEN btc_finished.
+        &quot; Fini (succès)
+        TRY.
+            &quot;&quot;  --&gt; Lance le programme
+            SUBMIT (me-&gt;ms_selection_criteria-ov_repid-&gt;*)
+              USER me-&gt;ms_selection_criteria-ov_user-&gt;*
+             USING SELECTION-SET me-&gt;ms_selection_criteria-ov_vari-&gt;*.
+
+          CATCH cx_root.
+            &quot; Une erreur est survenue
+            &quot;&quot;  --&gt; Considère en erreur
+            rv_subrc = 4.
+            MESSAGE s003(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                    me-&gt;ms_selection_criteria-ov_jobcount-&gt;*
+                       DISPLAY LIKE &apos;E&apos;.
+
+        ENDTRY.
+
+      WHEN OTHERS.
+        &quot; Autres Statut
+        &quot;&quot;  --&gt; Considère en erreur
+        rv_subrc = 4.
+        MESSAGE s003(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*
+                                me-&gt;ms_selection_criteria-ov_jobcount-&gt;*
+                   DISPLAY LIKE &apos;E&apos;.
+
+    ENDCASE.
+
+  ENDMETHOD.
+
+  METHOD job_spy_finish.
+
+***==================================================================***
+**                           TRAITEMENT                               **
+***==================================================================***
+
+    IF me-&gt;ms_selection_criteria-ov_decal-&gt;* EQ abap_true.
+      &quot; -----------------------------------------------------------
+      &quot; Décale la fin du Job
+      &quot; -----------------------------------------------------------
+
+      &quot; Attend le temps saisi (en Seconde)
+      WAIT UP TO me-&gt;time_convert_2_second(
+                    iv_mode = me-&gt;ms_selection_criteria-time_decal-mode
+                    iv_time = me-&gt;ms_selection_criteria-time_decal-time-&gt;* )
+         SECONDS.
+
+    ENDIF.
+
+    &quot; Affiche message de fin du traitement surveillés
+    MESSAGE s005(zjob) WITH me-&gt;ms_selection_criteria-ov_jobname-&gt;*.
+
+  ENDMETHOD.
+
+ENDCLASS.</source>
+ </PROG>
+</nugget>
